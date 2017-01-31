@@ -67,6 +67,7 @@
             //printerController.target = self.selectPrinter;
         } else {
             NSLog(@"[CDVBixolonPrint] _connect: Error! no printers found.");
+            [NSThread sleepForTimeInterval:1.0f];
             if( _refreshPrinterCount < 3 ){
                 [self refreshPrinterList];
             }else{
@@ -452,7 +453,7 @@
     NSLog(@"[CDVBixolonPrint initPrinterController] ");
     printerController                = [BXPrinterController getInstance];
     printerController.delegate       = self;
-    printerController.lookupCount	 = 5;
+    printerController.lookupCount	 = 3;
     printerController.AutoConnection = BXL_CONNECTIONMODE_AUTO;
 	[printerController open];
     //NSLog(@"[CDVBixolonPrint] _initPrinterController: BXPrinterController version: %@", printerController.version);
@@ -572,7 +573,13 @@
 // ---------------------------------------------------
 - (void) setFontType:(NSString *)fontType
 {
-    //TODO
+    if([fontType isEqualToString:@"B"]){
+        printerController.attribute = BXL_FT_FONTB;
+    }else if ([fontType isEqualToString:@"C"]){
+        printerController.attribute = BXL_FT_FONTC;
+    } else {
+        printerController.attribute = BXL_FT_DEFAULT;
+    }
 }
 // ---------------------------------------------------
 // setFontStyle
@@ -580,13 +587,13 @@
 - (void) setFontStyle:(NSString *)fontStyle
 {
     if([fontStyle isEqualToString:@"bold"]){
-        printerController.attribute = BXL_FT_BOLD;
+        printerController.attribute |= BXL_FT_BOLD;
     }else if ([fontStyle isEqualToString:@"reversed"]){
-        printerController.attribute = BXL_FT_REVERSE;
+        printerController.attribute |= BXL_FT_REVERSE;
     }else if ([fontStyle isEqualToString:@"underlined"]){
-        printerController.attribute = BXL_FT_UNDERLINE;
+        printerController.attribute |= BXL_FT_UNDERLINE;
     }else{
-        printerController.attribute = BXL_FT_DEFAULT;
+        printerController.attribute |= BXL_FT_DEFAULT;
     }
 }
 // ---------------------------------------------------
